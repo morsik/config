@@ -1,0 +1,121 @@
+#!/usr/bin/env bash
+
+APP_ARGS=${@}
+CONFUTIL_PATH="${HOME}/.confutil"
+CONFS_CURRENT="${CONFUTIL_PATH}/current"
+CONFS_AVAILABLE="${CONFUTIL_PATH}/available"
+
+einfo() {
+    echo -e "\033[1;32m * \033[0m${1}\033[0m"
+}
+
+ewarn() {
+    echo -e "\033[1;33m * \033[1;37m${1}\033[0m"
+}
+
+eerr() {
+    echo -e "\033[1;31m * \033[1;37m${1}\033[0m"
+}
+
+usage() {
+    echo "usage:"
+    return 1
+}
+
+scripts_load() {
+    [ "${1}" != "quiet" ] && einfo "Initializing confutil scripts"
+
+    if [ ! -d "${CONFS_AVAILABLE}" ]; then
+        einfo "Creating ${CONFS_AVAILABLE}"
+        mkdir -p "${CONFS_AVAILABLE}"
+    fi
+
+    if [ ! -d "${CONFS_CURRENT}" ]; then
+        einfo "Creating ${CONFS_CURRENT}"
+        mkdir -p "${CONFS_CURRENT}"
+    fi
+
+    for script in ${CONFS_CURRENT}/*; do
+        [ "${1}" != "quiet" ] && einfo "Loading $(basename ${script})"
+        source "${script}"
+    done
+}
+
+scripts_list() {
+    echo "Available scripts:"
+    for script in ${CONFS_AVAILABLE}/*; do
+        echo "  $(basename ${script})"
+    done
+}
+
+script_set() {
+    if [ ! -n "${2}" ]; then
+        echo "usage: set <script> <choice>"
+        return 1
+    fi
+
+    if [ ! -e "${CONFS_AVAILABLE}/${1}" ]; then
+        eerr "Script '${1}' doesn't exists!"
+        return 1
+    fi
+
+    if [ ! -d "${CONFS_AVAILABLE}/${1}" ]; then
+        eerr "Script '${1}' doesn't have choices!"
+        return 1
+    fi
+
+    einfo "Setting choice for '${1}': \033[1;36m${2}\033[0m"
+    ln -sf "${CONFS_AVAILABLE}/${1}/${2}" "${CONFS_CURRENT}/${1}"
+}
+
+script_enable() {
+    if [ -d "${CONFS_AVAILABLE}/${1}" ]; then
+        ewarn "Script '${1}' have multiple choices"
+        ewarn "Use 'set' to select correct script"
+        return 1
+    fi
+
+    if [ ! -e "${CONFS_AVAILABLE}/${1}" ]; then
+        eerr "Script '${1}' doesn't exists!"
+        return 1
+    fi
+
+    if [[ $(readlink "${CONFS_CURRENT}/${1}") == "${CONFS_AVAILABLE}/${1}" ]]; then
+        ewarn "Script '${1}' already enabled"
+        return 1
+    fi
+
+    einfo "Enabling ${1}"
+    ln -sf "${CONFS_AVAILABLE}/${1}" "${CONFS_CURRENT}/${1}"
+}
+
+script_disable() {
+    if [ ! -e "${CONFS_CURRENT}/${1}" ]; then
+        ewarn "Script ${1} not enabled"
+        return 1
+    fi
+
+    einfo "Disabling ${1}"
+    rm "${CONFS_CURRENT}/${1}"
+}
+
+case "${1}" in
+    "load")
+        scripts_load ${2}
+        ;;
+    "list")
+        scripts_list
+        ;;
+    "set")
+        script_set ${2} ${3}
+        ;;
+    "enable")
+        script_enable ${2}
+        ;;
+    "disable")
+        script_disable ${2}
+        ;;
+    *)
+        usage
+        ;;
+esac
