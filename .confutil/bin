@@ -74,7 +74,7 @@ script_set() {
         return 1
     fi
 
-    if [ ! -d "${CONFS_AVAILABLE}/${1}/${2}" ]; then
+    if [ ! -f "${CONFS_AVAILABLE}/${1}/${2}" ]; then
         eerr "Script '${1}' doesn't have choice '${2}'!"
         return 1
     fi
