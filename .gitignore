@@ -5,6 +5,9 @@
 .cache/
 .mozilla/
 .ssh/
+.thumbnails/
+
+.vim/.netrwhist
 
 Documents/
 Downloads/
