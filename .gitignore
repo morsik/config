@@ -1,0 +1,16 @@
+.Xauthority
+.viminfo
+.xsession-errors
+
+.cache/
+.mozilla/
+.ssh/
+
+Documents/
+Downloads/
+Music/
+Pictures/
+Projects/
+Videos/
+
+*.swp
