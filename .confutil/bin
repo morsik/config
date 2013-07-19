@@ -58,6 +58,10 @@ scripts_list() {
     done
 }
 
+scripts_reload() {
+    exec "${SHELL}"
+}
+
 script_set() {
     if [ ! -n "${2}" ]; then
         echo "usage: set <script> <choice>"
@@ -118,17 +122,23 @@ case "${1}" in
     "load")
         scripts_load ${2}
         ;;
+    "reload")
+        scripts_reload
+        ;;
     "list")
         scripts_list
         ;;
     "set")
         script_set ${2} ${3}
+        scripts_reload
         ;;
     "enable")
         script_enable ${2}
+        scripts_reload
         ;;
     "disable")
         script_disable ${2}
+        scripts_reload
         ;;
     *)
         usage

@@ -2,6 +2,6 @@
 
 CONFUTIL_PATH="${HOME}/.confutil/bin"
 
-alias confutil="${CONFUTIL_PATH}"
+alias confutil="source ${CONFUTIL_PATH}"
 
-. ${CONFUTIL_PATH} load quiet
+confutil load quiet
