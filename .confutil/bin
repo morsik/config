@@ -44,7 +44,26 @@ scripts_load() {
 scripts_list() {
     echo "Available scripts:"
     for script in ${CONFS_AVAILABLE}/*; do
-        echo "  $(basename ${script})"
+        s=$(basename ${script})
+        _ISCHOICE=" "
+        _ENABLED_CLR="\033[1;31m"
+        _ENABLED="off"
+
+        if [ -d "${CONFS_AVAILABLE}/${s}" ]; then
+            _ISCHOICE="\033[0;36mc\033[0m"
+            if [ -L "${CONFS_CURRENT}/${s}" ]; then
+                _CHOICE="$(basename $(readlink "${CONFS_CURRENT}/${s}"))"
+                _ENABLED_CLR="\033[1;32m"
+                _ENABLED="on"
+            fi
+        else
+            if [[ $(readlink "${CONFS_CURRENT}/${s}") == "${script}" ]]; then
+                _ENABLED_CLR="\033[1;32m"
+                _ENABLED="on"
+            fi
+        fi
+
+        printf "  ${_ISCHOICE} %-16s  ${_ENABLED_CLR}%-3s\033[0m  \033[1;36m%-8s\033[0m\n" "${s}" "${_ENABLED}" "${_CHOICE}"
     done
 }
 
@@ -61,6 +80,11 @@ script_set() {
 
     if [ ! -d "${CONFS_AVAILABLE}/${1}" ]; then
         eerr "Script '${1}' doesn't have choices!"
+        return 1
+    fi
+
+    if [ ! -d "${CONFS_AVAILABLE}/${1}/${2}" ]; then
+        eerr "Script '${1}' doesn't have choice '${2}'!"
         return 1
     fi
 
