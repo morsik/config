@@ -1,9 +1,19 @@
+.bash_history
+.pulse-cookie
 .Xauthority
 .viminfo
 .xsession-errors
 
+.aptitude/
 .cache/
+.dbus/
+.fontconfig/
+.fonts/
+.gimp-2.8/
+.macromedia/
 .mozilla/
+.pki/
+.pulse/
 .ssh/
 .thumbnails/
 
