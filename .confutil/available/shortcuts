@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 alias h="host"
 alias s="ssh"
+alias ll="ls -la"
+alias lh="ls -lah"
