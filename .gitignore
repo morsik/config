@@ -28,3 +28,6 @@ Projects/
 Videos/
 
 *.swp
+*.deb
+*.rpm
+*.bin
