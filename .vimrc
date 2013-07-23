@@ -9,8 +9,11 @@ set tabstop=4
 set expandtab
 set softtabstop=4
 set list listchars=tab:»·,trail:·
-set colorcolumn=80
 set cursorline
+
+if v:version >= 703
+    set colorcolumn=80
+endif
 
 set nocompatible
 
