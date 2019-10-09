@@ -1,5 +1,7 @@
 filetype plugin on
 
+set modeline
+
 syntax enable
 set autoindent
 set number
